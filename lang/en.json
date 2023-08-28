@@ -1,0 +1,9 @@
+{
+    "USER_GUEST_NOT_ALLOWED": "Guests are not allowed on this server",
+    "YOU_ARE_BANNED_UNTIL_FOR_REASON": "You are banned until %s for reason: %s",
+    "YOU_ARE_MUTED_UNTIL_FOR_REASON": "You are muted until %s for reason: %s",
+    "CMD_WONG_SYNTAX": "Wrong command syntax",
+    "CMD_KICK_USAGE": "USAGE: kick nick \"any reason\"",
+    "CMD_BAN_USAGE": "USAGE: ban nick \"any reason\" duration",
+    "CMD_MUTE_USAGE": "USAGE: mute nick \"any reason\" duration"
+}
