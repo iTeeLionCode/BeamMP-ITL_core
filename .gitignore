@@ -1,0 +1,6 @@
+*
+!.gitignore
+!/LICENSE
+!/README.md
+!/Config/mysql.json.example
+!/Resources/Server/ITLcore/*
