@@ -1,0 +1,7 @@
+{
+    "server_id": 1,
+    "default_group_id": 1,
+    "lang": "ru",
+    "guests_allowed": true,
+    "debug": true
+}
