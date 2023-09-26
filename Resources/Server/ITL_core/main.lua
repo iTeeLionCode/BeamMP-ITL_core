@@ -1,4 +1,4 @@
-local pluginName = "ITLcore"
+local pluginName = "ITL_core"
 local pluginVersion = "0.0.2"
 local pluginInitialized = nil
 

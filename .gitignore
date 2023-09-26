@@ -4,5 +4,5 @@
 !/README.md
 !/db.sql
 !/Config/mysql.json.example
-!/Resources/Server/ITLcore
-/Resources/Server/ITLcore/config/main.json
+!/Resources/Server/ITL_core
+/Resources/Server/ITL_core/config/main.json
