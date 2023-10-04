@@ -1,5 +1,5 @@
 pluginName = "ITL_core"
-pluginVersion = "0.0.2"
+pluginVersion = "0.0.3"
 pluginConfig = nil
 playersCache = {}
 
