@@ -22,7 +22,7 @@ function onInit()
     -- Console CMD
 
     function OnShowCommandsHandler(args)
-        print("SHOW CMD")
+        print("Commands list:")
         MP.TriggerGlobalEvent("onShowAllCommands")
     end
     CMD.registerConsoleCmd("OnShowCommandsHandler", "commands", "Show all registred commands")
@@ -30,7 +30,12 @@ function onInit()
     function OnConsoleCmd_reloadplayers_handler(args)
         CORE.reloadPlayersCache()
     end
-    CMD.registerConsoleCmd("OnConsoleCmd_reloadplayers_handler", "reloadplayers", "Mute player")
+    CMD.registerConsoleCmd("OnConsoleCmd_reloadplayers_handler", "reloadplayers", "Reload players cache")
+
+    function OnConsoleCmd_getplayers_handler(args)
+        print(playersCache)
+    end
+    CMD.registerConsoleCmd("OnConsoleCmd_getplayers_handler", "playerscache", "Show players cache")
     
     function OnConsoleCmd_ban_handler(args)
         if args[1] == nil or args[2] == nil or args[3] == nil then
@@ -51,29 +56,22 @@ function onInit()
     end
     CMD.registerConsoleCmd("OnConsoleCmd_mute_handler", "mute", "Mute player")
     
-    function OnConsoleCmd_getplayers_handler(args)
-        print(playersCache)
-    end
-    CMD.registerConsoleCmd("OnConsoleCmd_getplayers_handler", "getplayers", "Mute player")
-    
     -- Chat CMD
-    
-    function OnChatCmd_reloadplayers_handler(initiatorId, args)
-        CORE.reloadPlayersCache()
-    end
-    CMD.registerChatCmd("OnChatCmd_reloadplayers_handler", "reloadplayers", "Mute player")
     
     function OnChatCmd_whoami_handler(initiatorId, args)
         MP.SendChatMessage(initiatorId, string.format("%s: %s", initiatorId, MP.GetPlayerName(initiatorId)))
     end
     CMD.registerChatCmd("OnChatCmd_whoami_handler", "whoami", "Shows your playerId and playerName")
+
+    function OnChatCmd_reloadplayers_handler(initiatorId, args)
+        CORE.reloadPlayersCache()
+    end
+    CMD.registerChatCmd("OnChatCmd_reloadplayers_handler", "reloadplayers", "Reload players cache")
     
     function OnChatCmd_playerslist_handler(initiatorId, args)
-        local players = {}
         for id, name in pairs(MP.GetPlayers()) do
-            table.insert(players, id .. ": " .. name)
+            MP.SendChatMessage(initiatorId, string.format("%s: %s", id, name))
         end
-        MP.SendChatMessage(initiatorId, string.format("%s", table.concat(players, "| ")))
     end
     CMD.registerChatCmd("OnChatCmd_playerslist_handler", "players", "Shows players list")
     
@@ -87,7 +85,7 @@ function onInit()
             end
         end
     end
-    CMD.registerChatCmd("OnChatCmd_getplayers_handler", "players2", "Mute player")
+    CMD.registerChatCmd("OnChatCmd_getplayers_handler", "aplayers", "Show players cache with additional info")
     
     function OnChatCmd_kick_handler(initiatorId, args)
         if args[1] == nil or args[2] == nil then
@@ -121,15 +119,19 @@ function onInit()
     
     -- Events
     
-    function PreventMutedUserMessageHandler(senderId, senderName, text)
+    function onChatMessageHandler(senderId, senderName, text)
+        -- Prevent muted players 
         for playerName, player in pairs(playersCache) do
             if playerName == senderName and player.mute ~= nil then
                 MP.SendChatMessage(senderId, string.format(LANG.getRow("YOU_ARE_MUTED_UNTIL_FOR_REASON"), player.mute.cancel_at, player.mute.reason))
+                CORE.logChatMessage(senderName, text, 1)
                 return 1
             end
         end
+
+        CORE.logChatMessage(senderName, text, 0)
     end
-    MP.RegisterEvent("onChatMessage", "PreventMutedUserMessageHandler")
+    MP.RegisterEvent("onChatMessage", "onChatMessageHandler")
     
     function OnPlayerAuthHandler(playerName, playerRole, isGuest, identifiers)
         local res = CORE.checkPlayerOnAuth(playerName, isGuest)
