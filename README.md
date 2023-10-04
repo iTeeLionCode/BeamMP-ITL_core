@@ -6,11 +6,23 @@ Server-side BeamMP plugin for management
 
 | Description | Syntax |
 | ------ | ------ |
-| Disconnect user from server | kick nick "reason" |
-| Disallow chat for user | mute nick "reason" duration |
-| Disallow user to connect to server| ban nick "reason" duration |
-| Reload players cache after manual chages in DB | reloadplayers |
-| Show players | playerscache |
+| Show all commands | commands |
+| Manual reload players cache | reloadplayers |
+| Show current players cache | playerscache |
+| Kick and ban player | ban nick "reason" duration |
+| Disallow chat for player | mute nick "reason" duration |
+
+## Chat commands:
+
+| Description | Syntax |
+| ------ | ------ |
+| Show current player nickname | whoami |
+| Manual reload players cache | reloadplayers |
+| Show online players | players |
+| Show online players for admins with additional info | aplayers |
+| Kick player from server | kick nick "reason" |
+| Kick and ban player | ban nick "reason" duration |
+| Disallow chat for player | mute nick "reason" duration |
 
 ## Chat commands
 
