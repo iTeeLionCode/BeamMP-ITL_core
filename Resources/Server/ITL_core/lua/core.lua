@@ -33,7 +33,7 @@ function MODULE.reloadPlayersCache()
     local now = os.date("%Y-%m-%d %H:%M:%S")
     local blockings = {}
     if players ~= nil then
-        local sql = "SELECT blockings.id, blockings.server_id, blockings.user_id, blockings.type, blockings.cancel_at, blockings.reason, users.player_name FROM blockings JOIN users ON blockings.user_id = users.id WHERE blockings.server_id = '"..pluginConfig.server_id.."' AND type = 'mute' AND blockings.cancel_at > '%s' AND users.player_name IN ("..playerNames..")"
+        local sql = "SELECT blockings.id, blockings.server_id, blockings.user_id, blockings.type, blockings.cancel_at, blockings.reason, users.player_name FROM blockings JOIN users ON blockings.user_id = users.id WHERE (blockings.server_id = '"..pluginConfig.server_id.."' OR blockings.server_id IS NULL) AND type = 'mute' AND blockings.cancel_at > '%s' AND users.player_name IN ("..playerNames..")"
         local dbRes = MYSQL.execute("read", sql, {now})
         blockings = MYSQL.fetchAll(dbRes)
     end
@@ -135,7 +135,7 @@ function MODULE.checkPlayerOnAuth(playerName, isGuest)
     if #users > 0 then
         userId = users[1].id
         local now = os.date("%Y-%m-%d %H:%M:%S")
-        local dbRes = MYSQL.execute("read", "SELECT id, user_id, cancel_at, reason FROM blockings WHERE type = 'ban' AND is_canceled = 0 AND server_id = '%s' AND user_id = '%s' AND cancel_at > '%s' ORDER BY id DESC", {pluginConfig.server_id, userId, now})
+        local dbRes = MYSQL.execute("read", "SELECT id, user_id, cancel_at, reason FROM blockings WHERE type = 'ban' AND is_canceled = 0 AND (server_id = '%s' OR server_id IS NULL) AND user_id = '%s' AND cancel_at > '%s' ORDER BY id DESC", {pluginConfig.server_id, userId, now})
         local blockings = MYSQL.fetchAll(dbRes)
         if #blockings > 0 then
             print(string.format("User %s kicked because of ban %s: %s", playerName, blockings[1].id, blockings[1].reason))
