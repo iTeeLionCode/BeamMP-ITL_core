@@ -4,36 +4,13 @@ Server-side BeamMP plugin for management
 
 ## Console commands:
 
-<table>
-    <thead>
-        <tr>
-            <td>Description</td>
-            <td>Syntax</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Disconnect user from server</td>
-            <td>/kick nick "reason"</td>
-        </tr>
-        <tr>
-            <td>Disallow chat for user</td>
-            <td>/mute nick "reason" duration</td>
-        </tr>
-        <tr>
-            <td>Disallow user to connect to server</td>
-            <td>/ban nick "reason" duration</td>
-        </tr>
-        <tr>
-            <td>Reload players cache after manual chages in DB</td>
-            <td>/reloadplayers</td>
-        </tr>
-        <tr>
-            <td>Show players</td>
-            <td>/getplayers</td>
-        </tr>
-    </tbody>
-</table>
+| Description | Syntax |
+| ------ | ------ |
+| Disconnect user from server | kick nick "reason" |
+| Disallow chat for user | mute nick "reason" duration |
+| Disallow user to connect to server| ban nick "reason" duration |
+| Reload players cache after manual chages in DB | reloadplayers |
+| Show players | playerscache |
 
 ## Chat commands
 
