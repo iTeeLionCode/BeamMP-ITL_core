@@ -3,11 +3,7 @@ local MODULE = {}
 local langsPath = debug.getinfo(1).source:match("@?(.*/)") .. "../lang/"
 local lang = 'en'
 
-function MODULE.initModule(setLang)
-    lang = setLang
-end
-
-function MODULE.readFile(path)
+local function readFile(path)
     local file = io.open(path, "rb")
     if not file then
        return nil
@@ -18,10 +14,14 @@ function MODULE.readFile(path)
     end
 end
 
+function MODULE.initModule(setLang)
+    lang = setLang
+end
+
 function MODULE.getRow(name)
     local filePath = langsPath .. lang .. ".json"
     if (FS.IsFile(filePath)) then
-        local lang = Util.JsonDecode(MODULE.readFile(filePath))
+        local lang = Util.JsonDecode(readFile(filePath))
         return lang[name]
     else
         return name

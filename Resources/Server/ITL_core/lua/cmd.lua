@@ -1,5 +1,4 @@
 -- Module require ITL_LANG and ITL_MYSQL modules!!!
-
 local MODULE = {}
 
 local LANG = nil
@@ -10,36 +9,7 @@ local consoleCommands = {}
 local commandPrefix = "/"
 local cmdCache = {}
 
-function MODULE.initModule(setLang, setMysql, setServerId)
-    serverId = setServerId
-    LANG = setLang
-    MYSQL = setMysql
-end
-
-function MODULE.registerConsoleCmd(handler, name, description)
-    if (MODULE.isRegistred(consoleCommands, name) == nil) then
-        table.insert(consoleCommands, {name = name, description = description})
-        MP.RegisterEvent("onConsoleCmd_" .. name, handler)
-    end
-end
-
-function MODULE.registerChatCmd(handler, name, description)
-    if (MODULE.isRegistred(chatCommands, name) == nil) then
-        table.insert(chatCommands, {name = name, description = description})
-        MP.RegisterEvent("onChatCmd_" .. name, handler)
-    end
-end
-
-function MODULE.isRegistred(typeList, name)
-    for k, v in pairs(typeList) do
-        if (v.name == name) then
-            return k
-        end
-    end
-    return nil
-end
-
-function MODULE.splitTextToArgsArray(text)
+local function splitTextToArgsArray(text)
     local parts = {}
     local e = 0
 
@@ -73,15 +43,7 @@ function MODULE.splitTextToArgsArray(text)
     return {name = name, args = parts}
 end
 
-function MODULE.responseMessage(senderId, msg)
-    if (type(senderId) == 'nil') then
-        print(msg)
-    else
-        MP.SendChatMessage(senderId, msg)
-    end
-end
-
-function MODULE.checkCmdAccess(cmd, nick)
+local function checkCmdAccess(cmd, nick)
     local sql = "SELECT users.id, users.player_name, users_groups.group_id, cmd_permissions.cmd FROM users INNER JOIN users_groups ON users.id = users_groups.user_id INNER JOIN cmd_permissions ON (entity = 'group' AND entity_id = users_groups.group_id) OR (entity = 'user' AND entity_id = users.id) WHERE users.player_name = '%s' AND cmd_permissions.cmd = '%s'";
     local dbRes = MYSQL.execute("read", sql, {nick, cmd})
     local access = MYSQL.fetchAll(dbRes)
@@ -89,6 +51,43 @@ function MODULE.checkCmdAccess(cmd, nick)
         return true;
     end
     return false;
+end
+
+function MODULE.initModule(setLang, setMysql, setServerId)
+    serverId = setServerId
+    LANG = setLang
+    MYSQL = setMysql
+end
+
+function MODULE.registerConsoleCmd(handler, name, description)
+    if (MODULE.isRegistred(consoleCommands, name) == nil) then
+        table.insert(consoleCommands, {name = name, description = description})
+        MP.RegisterEvent("onConsoleCmd_" .. name, handler)
+    end
+end
+
+function MODULE.registerChatCmd(handler, name, description)
+    if (MODULE.isRegistred(chatCommands, name) == nil) then
+        table.insert(chatCommands, {name = name, description = description})
+        MP.RegisterEvent("onChatCmd_" .. name, handler)
+    end
+end
+
+function MODULE.isRegistred(typeList, name)
+    for k, v in pairs(typeList) do
+        if (v.name == name) then
+            return k
+        end
+    end
+    return nil
+end
+
+function MODULE.responseMessage(senderId, msg)
+    if (type(senderId) == 'nil') then
+        print(msg)
+    else
+        MP.SendChatMessage(senderId, msg)
+    end
 end
 
 function OnShowAllCommandsHandler()
@@ -102,9 +101,9 @@ MP.RegisterEvent("onShowAllCommands", "OnShowAllCommandsHandler")
 
 function OnChatMessageHandler(senderId, senderName, text)
     if string.sub(text, 1, 1) == commandPrefix then
-        local cmd = MODULE.splitTextToArgsArray(text)
+        local cmd = splitTextToArgsArray(text)
         if MODULE.isRegistred(chatCommands, cmd.name) then
-            local isAccess = MODULE.checkCmdAccess(cmd.name, senderName)
+            local isAccess = checkCmdAccess(cmd.name, senderName)
             if isAccess then
                 MP.TriggerLocalEvent("onChatCmd_" .. cmd.name, senderId, cmd.args)
             else
@@ -117,7 +116,7 @@ end
 MP.RegisterEvent("onChatMessage", "OnChatMessageHandler")
 
 function OnConsoleInputHandler(text)
-    local cmd = MODULE.splitTextToArgsArray(text)
+    local cmd = splitTextToArgsArray(text)
     if MODULE.isRegistred(consoleCommands, cmd.name) then
         MP.TriggerLocalEvent("onConsoleCmd_" .. cmd.name, cmd.args)
         return "Command: " .. cmd.name
