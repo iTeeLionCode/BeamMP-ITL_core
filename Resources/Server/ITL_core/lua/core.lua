@@ -26,7 +26,7 @@ function MODULE.reloadPlayersCache()
     local users = MYSQL.fetchAll(dbRes)
     if users ~= nil then
         for key, user in pairs(users) do
-            playersCache[user.playerName]["userId"] = user.id
+            playersCache[user.player_name]["userId"] = user.id
         end
     end
 
@@ -39,7 +39,7 @@ function MODULE.reloadPlayersCache()
     end
     if blockings ~= nil then
         for key, item in pairs(blockings) do
-            playersCache[item.playerName]["mute"] = {id = item.id, cancel_at = item.cancel_at, reason = item.reason}
+            playersCache[item.player_name]["mute"] = {id = item.id, server_id = item.server_id, cancel_at = item.cancel_at, reason = item.reason}
         end
     end
 end
@@ -87,7 +87,7 @@ function MODULE.ban(playerName, reason, duration)
 
     kick(playerName, reason)
 
-    local user = getUserByName(playerName);
+    local user = MODULE.getUserByName(playerName);
     if user ~= nil then
         MYSQL.execute("write", "INSERT INTO blockings (server_id, user_id, type, cancel_at, reason) VALUES ('%s', '%s', '%s', '%s', '%s')", {pluginConfig.server_id, user.id, "ban", untilDate, reason})
     else
@@ -105,7 +105,7 @@ end
 function MODULE.mute(playerName, reason, duration)
     local untilDate = os.date("%Y-%m-%d %H:%M:%S", UTILS.getFutureTimestamp(duration))
 
-    local user = getUserByName(playerName);
+    local user = MODULE.getUserByName(playerName);
     if user ~= nil then
         MYSQL.execute("write", "INSERT INTO blockings (server_id, user_id, type, cancel_at, reason) VALUES ('%s', '%s', '%s', '%s', '%s')", {pluginConfig.server_id, user.id, "mute", untilDate, reason})
     else
@@ -157,6 +157,12 @@ function MODULE.checkPlayerOnAuth(playerName, isGuest)
     -- ToDo: ban by previous ip
 
     return nil
+end
+
+function MODULE.logChatMessage(playerName, message, isBlocked)
+    local now = os.date("%Y-%m-%d %H:%M:%S")
+    local user = MODULE.getUserByName(playerName)
+    MYSQL.execute("write", "INSERT INTO messages_log (server_id, user_id, date, message, is_blocked) VALUES ('%s', '%s', '%s', '%s', '%s')", {pluginConfig.server_id, user.id, now, message, isBlocked})
 end
 
 return MODULE

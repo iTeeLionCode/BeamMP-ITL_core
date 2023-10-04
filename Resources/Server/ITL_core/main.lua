@@ -119,15 +119,19 @@ function onInit()
     
     -- Events
     
-    function PreventMutedUserMessageHandler(senderId, senderName, text)
+    function onChatMessageHandler(senderId, senderName, text)
+        -- Prevent muted players 
         for playerName, player in pairs(playersCache) do
             if playerName == senderName and player.mute ~= nil then
                 MP.SendChatMessage(senderId, string.format(LANG.getRow("YOU_ARE_MUTED_UNTIL_FOR_REASON"), player.mute.cancel_at, player.mute.reason))
+                CORE.logChatMessage(senderName, text, 1)
                 return 1
             end
         end
+
+        CORE.logChatMessage(senderName, text, 0)
     end
-    MP.RegisterEvent("onChatMessage", "PreventMutedUserMessageHandler")
+    MP.RegisterEvent("onChatMessage", "onChatMessageHandler")
     
     function OnPlayerAuthHandler(playerName, playerRole, isGuest, identifiers)
         local res = CORE.checkPlayerOnAuth(playerName, isGuest)
