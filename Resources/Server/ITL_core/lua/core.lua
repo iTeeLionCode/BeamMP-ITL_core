@@ -165,4 +165,10 @@ function MODULE.logChatMessage(playerName, message, isBlocked)
     MYSQL.execute("write", "INSERT INTO messages_log (server_id, user_id, date, message, is_blocked) VALUES ('%s', '%s', '%s', '%s', '%s')", {pluginConfig.server_id, user.id, now, message, isBlocked})
 end
 
+function MODULE.report(playerId, args)
+    local row = UTILS.tabconcat(args, " ")
+
+    print(row)
+end
+
 return MODULE
