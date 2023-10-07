@@ -12,5 +12,6 @@
         "name": "beammp_itlcore",
         "user": "beammp_itlcore",
         "pass": "yourpasshere"
-    }
+    },
+    "debug": false
 }

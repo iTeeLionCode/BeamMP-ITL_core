@@ -1,8 +1,8 @@
 *
 !.gitignore
-!/LICENSE
-!/README.md
-!/db.sql
-!/Config/mysql.json.example
-!/Resources/Server/ITL_core
-/Resources/Server/ITL_core/config/main.json
+!LICENSE
+!EADME.md
+!db.sql
+!Config/mysql.json.example
+!Resources/Server/ITL_core/*
+Resources/Server/ITL_core/config/main.json
