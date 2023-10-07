@@ -6,6 +6,12 @@ local SQL = require("luasql.mysql")
 local env = SQL.mysql()
 local config = nil
 
+local function debug (variable)
+    if config ~= nil and config.debug ~= nil and config.debug == true then
+        print(variable)
+    end
+end
+
 function MODULE.initModule(setConfig)
     config = setConfig
 end
@@ -26,7 +32,8 @@ function MODULE.execute(direction, clause, args)
         end
         clause = string.format(clause, table.unpack(args))
     end
-    print(clause) -- DEBUG
+
+    debug(clause)
 
     local dbRes = nil
     local success, cursor = pcall(conn.execute, conn, clause)
