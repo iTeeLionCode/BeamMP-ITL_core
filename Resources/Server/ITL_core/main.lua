@@ -116,6 +116,12 @@ function onInit()
         CORE.reloadPlayersCache()
     end
     CMD.registerChatCmd("OnChatCmd_mute_handler", "mute", "Mute player")
+
+    function OnChatCmd_report_handler(initiatorId, args)
+        print("REPORT CMD")
+        CORE.report(initiatorId, args)
+    end
+    CMD.registerChatCmd("OnChatCmd_report_handler", "report", "Report player")
     
     -- Events
     
